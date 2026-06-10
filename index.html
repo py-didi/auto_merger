@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор таблиц Turbo</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="loading-overlay" class="win95-overlay-bg">
+        <div class="win95-modal-window" style="width: 300px; padding: 2px;">
+            <div class="title-bar">
+                <span style="font-weight: bold; font-size: 11px;">Выполнение...</span>
+            </div>
+            <div style="padding: 16px; text-align: center;">
+                <h2 id="loading-text" style="font-weight: bold; margin-bottom: 8px;">Обработка данных...</h2>
+                <p style="font-size: 11px; margin-bottom: 12px;">Пожалуйста, подождите.</p>
+                <div class="win95-inset-pane" style="height: 20px; padding: 2px; display: flex; overflow: hidden;">
+                    <div class="win95-progress-chunk" style="animation-delay: 0s;"></div>
+                    <div class="win95-progress-chunk" style="animation-delay: 0.1s;"></div>
+                    <div class="win95-progress-chunk" style="animation-delay: 0.2s;"></div>
+                    <div class="win95-progress-chunk" style="animation-delay: 0.3s;"></div>
+                    <div class="win95-progress-chunk" style="animation-delay: 0.4s;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="win95-app-window">
+        
+        <div class="title-bar select-none">
+            <div style="display: flex; align-items: center; gap: 4px;">
+                <span>📊</span>
+                <span>Конструктор таблиц.exe</span>
+            </div>
+            <div class="title-bar-controls">
+                <button onclick="App.toggleInstructions(true)" class="win95-btn-title active-btn" title="Справка">?</button>
+                <button class="win95-btn-title cursor-default" title="Не активно">_</button>
+                <button class="win95-btn-title cursor-default" title="Не активно">X</button>
+            </div>
+        </div>
+
+        <div class="win95-menu-bar select-none">
+            <span class="menu-item cursor-default">Файл</span>
+            <span class="menu-item cursor-default">Правка</span>
+            <span class="menu-item cursor-default">Вид</span>
+            <span class="menu-item active-menu" onclick="App.toggleInstructions(true)">Помощь</span>
+        </div>
+
+        <div class="win95-workspace">
+            
+            <aside id="win95-sidebar">
+                <button id="nav-mode1" onclick="App.switchMode(1)" class="win95-nav-btn active-nav">
+                    <span>🔗</span> Умный ВПР
+                </button>
+                <button id="nav-mode2" onclick="App.switchMode(2)" class="win95-nav-btn">
+                    <span>📚</span> Сборщик шаблонов
+                </button>
+                
+                <div style="height: 1px; background: #808080; border-bottom: 1px solid white; margin: 10px 0;"></div>
+                
+                <a href="https://t.me/D2bd2" target="_blank" style="color: blue; text-align: center; text-decoration: underline; font-size: 11px; margin-top: auto; padding-bottom: 4px;">
+                    Поблагодарить автора
+                </a>
+            </aside>
+
+            <main class="win95-main-content">
+                
+                <div id="screen-mode1">
+                    <fieldset class="win95-fieldset">
+                        <legend>Слияние таблиц (VLOOKUP)</legend>
+                        <p style="margin-bottom: 12px; font-style: italic;">Объединение множества отчетов в одну плоскую таблицу по общему ключу.<br> Позволяет собирать таблицу из множества исходных файлов <br> с сопоставлением по одному из полей (например, артикул). Заменяет собой множество ВПР</p>
+                        
+                        <div style="border: 1px solid #808080; border-right-color: white; border-bottom-color: white; padding: 12px; margin-bottom: 12px;">
+                            <h3 style="font-weight: bold; margin-bottom: 8px;">1. Главный файл (Базовая таблица) (например все артикулы)</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-3">
+                                <div class="md:col-span-2">
+                                    <input type="file" id="main-file-input" accept=".xlsx, .xls, .csv" onchange="ModeVlookup.triggerSheetScanMain(this)" class="win95-file-input">
+                                </div>
+                                <div>
+                                    <label style="display:block; margin-bottom:2px; font-size: 11px;">Строка с заголовками в Excel <br> (нумерация с 1):</label>
+                                    <input type="number" id="main-header-idx" value="1" min="1" class="win95-input w-full text-center">
+                                </div>
+                            </div>
+                            
+                            <div id="main-sheets-container" class="hidden win95-inset-pane mb-3">
+                                <label style="display:block; font-weight:bold; margin-bottom:4px; font-size: 11px;">Выберите листы (FLAT склейка):</label>
+                                <div id="main-sheets-checkboxes" class="flex flex-wrap gap-2"></div>
+                            </div>
+                            
+                            <button onclick="ModeVlookup.processMainFile()" class="win95-btn">
+                                Прочитать структуру
+                            </button>
+                        </div>
+
+                        <div id="main-mapping-area" class="hidden grid grid-cols-1 md:grid-cols-2 gap-6" style="margin-bottom: 16px;">
+                            <div>
+                                <label style="display:block; font-weight:bold; margin-bottom:4px;">Первичный ключ (поле по которому будем сопоставлять данные)(Артикул/SKU):</label>
+                                <select id="main-key-select" class="win95-select w-full"></select>
+                            </div>
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 4px;">
+                                    <label style="font-weight:bold;">Какие колонки оставить в итоговом файле?</label>
+                                    <div style="display: flex; gap: 4px;">
+                                        <button onclick="App.toggleCheckboxes('main-cols-checkboxes', true)" class="win95-btn" style="padding: 1px 6px; font-size: 10px;">Всё</button>
+                                        <button onclick="App.toggleCheckboxes('main-cols-checkboxes', false)" class="win95-btn" style="padding: 1px 6px; font-size: 10px;">Снять</button>
+                                    </div>
+                                </div>
+                                <div id="main-cols-checkboxes" class="win95-inset-pane" style="height: 120px; overflow-y: scroll;"></div>
+                            </div>
+                        </div>
+
+                        <div id="extra-files-container" style="display: flex; flex-direction: column; gap: 12px;"></div>
+
+                        <div id="mode1-options" class="hidden" style="margin-top:16px; border-top: 1px solid #808080; padding-top: 12px;">
+                            <label style="display: flex; align-items: center; gap: 6px; margin-bottom: 6px; cursor: pointer;">
+                                <input type="checkbox" id="remove-dupes-checkbox" style="margin:0;">
+                                <span>Удалять дубликаты строк по ключу (оставлять только первые вхождения)</span>
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" id="drop-unmatched-rows" style="margin:0;">
+                                <span style="color: #000080; font-weight: bold;">INNER JOIN: Оставить только строки, по которым нашлась информация в доп. файлах</span>
+                            </label>
+                        </div>
+
+                        <div id="mode1-controls" class="hidden" style="margin-top:16px; display: flex; justify-content: space-between; align-items: center;">
+                            <button onclick="ModeVlookup.addExtraFileBlock()" class="win95-btn">
+                                ➕ Добавить файл связки
+                            </button>
+                            <button onclick="ModeVlookup.executeMerge()" class="win95-btn win95-btn-action" style="padding: 6px 20px;">
+                                ⚡ Собрать итоговую таблицу
+                            </button>
+                        </div>
+                    </fieldset>
+                </div>
+
+                <div id="screen-mode2" class="hidden">
+                    <fieldset class="win95-fieldset">
+                        <legend>Сборщик шаблонов</legend>
+                        <p style="margin-bottom: 12px; font-style: italic;">Вертикальная склейка множества однотипных файлов в единый массив.</p>
+                        
+                        <div style="border: 1px solid #808080; border-right-color: white; border-bottom-color: white; padding: 12px; margin-bottom: 12px;">
+                            <h3 style="font-weight: bold; margin-bottom: 8px;">1. Загрузка пакета файлов</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end mb-3">
+                                <div class="md:col-span-2">
+                                    <input type="file" id="template-files-input" accept=".xlsx, .xls, .csv" multiple onchange="ModeStacker.triggerSheetScan(this)" class="win95-file-input">
+                                </div>
+                                <div>
+                                    <label style="display:block; margin-bottom:2px; font-size: 11px;">Строка шапки в EXCEL (нумерация с 1):</label>
+                                    <input type="number" id="template-header-idx" value="1" min="1" class="win95-input w-full text-center">
+                                </div>
+                            </div>
+
+                            <div id="template-sheets-container" class="hidden win95-inset-pane mb-3">
+                                <label style="display:block; font-weight:bold; margin-bottom:4px; font-size: 11px;">Выберите листы:</label>
+                                <div id="template-sheets-checkboxes" class="flex flex-wrap gap-2"></div>
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                    <input type="checkbox" id="template-add-filename" checked style="margin:0;">
+                                    <span>Добавить колонку с именем файла источника?</span>
+                                </label>
+                                <button onclick="ModeStacker.processTemplates()" class="win95-btn">
+                                    Прочитать структуру
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="template-mapping-area" class="hidden">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 6px;">
+                                <label style="font-weight:bold;">Какие столбцы собирать из каждого файла?</label>
+                                <div style="display: flex; gap: 4px;">
+                                    <button onclick="App.toggleCheckboxes('template-cols-checkboxes', true)" class="win95-btn" style="padding: 1px 6px; font-size: 10px;">Всё</button>
+                                    <button onclick="App.toggleCheckboxes('template-cols-checkboxes', false)" class="win95-btn" style="padding: 1px 6px; font-size: 10px;">Снять</button>
+                                </div>
+                            </div>
+                            
+                            <div id="template-cols-checkboxes" class="win95-inset-pane grid grid-cols-1 md:grid-cols-3 gap-2" style="height: 180px; overflow-y: scroll;"></div>
+                            
+                            <div style="margin-top:16px; display: flex; justify-content: center;">
+                                <button onclick="ModeStacker.executeMerge()" class="win95-btn win95-btn-action" style="padding: 6px 30px;">
+                                    💾 Собрать и скачать объединенный файл
+                                </button>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </main>
+        </div>
+        
+        <div class="border-t border-[#808080] shadow-[0_-1px_0_0_#fff] flex px-2 py-1 text-[11px]" style="background-color: var(--surface);">
+            <div class="w-1/2 border border-[#808080] shadow-[1px_1px_0_0_#fff] bg-[#c0c0c0] px-1 truncate">Разработано специально для селлеров</div>
+            <div class="w-1/2 border border-[#808080] shadow-[1px_1px_0_0_#fff] bg-[#c0c0c0] px-1 text-right">SYS_STATUS: READY</div>
+        </div>
+    </div>
+
+    <div id="instruction-modal" class="win95-overlay-bg">
+        <div class="win95-modal-window" style="width: 500px; padding: 2px;">
+            <div class="title-bar">
+                <span class="title-bar-text pl-1">Справка по инструментам</span>
+                <button onclick="App.toggleInstructions(false)" class="win95-btn-title active-btn">X</button>
+            </div>
+            <div style="padding: 12px;">
+                <div class="win95-inset-pane" style="height: 200px; overflow-y: auto; margin-bottom: 12px; background: white;">
+                    <p style="margin-bottom: 8px;"><strong>🔗 Умный ВПР:</strong> Сводит данные из разных таблиц по уникальному ключу (артикулу). Автоматически обрабатывает пустые строки и предлагает удаление дубликатов.</p>
+                    <hr style="border: 0; border-top: 1px solid #808080; border-bottom: 1px solid white; margin: 8px 0;">
+                    <p><strong>📚 Сборщик шаблонов:</strong> Берет сотни одинаковых файлов и склеивает их друг под другом в одну таблицу, оставляя только нужные вам столбцы. Работает порционно, не перегружая память ПК.</p>
+                </div>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button onclick="App.toggleInstructions(false)" class="win95-btn" style="width: 80px;">ОК</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/engine.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/mode-vlookup.js"></script>
+    <script src="js/mode-stacker.js"></script>
+</body>
+</html>

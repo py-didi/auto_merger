@@ -1,0 +1,242 @@
+/* ========================================== */
+/* WINDOWS 95 RETRO THEME SYSTEM              */
+/* ========================================== */
+:root {
+    --surface: #c0c0c0;
+    --button-highlight: #ffffff;
+    --button-shadow: #808080;
+    --button-active-shadow: #000000;
+    --dialog-blue: #000080;
+    --text-color: #000000;
+}
+
+body {
+    background-color: #008080;
+    color: var(--text-color);
+    font-family: 'Tahoma', 'MS Sans Serif', Arial, sans-serif;
+    font-size: 13px;
+    margin: 0;
+    padding: 16px;
+    height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+#win95-app-window {
+    width: 100%;
+    max-width: 950px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--surface);
+    border: 2px solid;
+    border-color: var(--button-highlight) var(--button-active-shadow) var(--button-active-shadow) var(--button-highlight);
+    box-sizing: border-box;
+    box-shadow: 2px 2px 0px rgba(0,0,0,0.5);
+}
+
+.title-bar {
+    height: 22px;
+    background: var(--dialog-blue);
+    color: #ffffff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 3px;
+    flex-shrink: 0;
+}
+
+.title-bar-controls { display: flex; gap: 2px; }
+
+.win95-btn-title {
+    width: 16px;
+    height: 14px;
+    background-color: var(--surface);
+    border: 1px solid;
+    border-color: var(--button-highlight) var(--button-active-shadow) var(--button-active-shadow) var(--button-highlight);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 10px;
+    padding: 0;
+    color: black;
+}
+/* Интерактивна только кнопка справки, остальные - декор */
+.win95-btn-title.active-btn:active {
+    border-color: var(--button-active-shadow) var(--button-highlight) var(--button-highlight) var(--button-active-shadow);
+    padding: 1px 0 0 1px;
+}
+
+.win95-menu-bar {
+    background-color: var(--surface);
+    display: flex;
+    gap: 16px;
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--button-shadow);
+    box-shadow: 0 1px 0 #ffffff;
+}
+.menu-item { color: black; text-decoration: none; padding: 2px 4px; }
+.menu-item.active-menu:hover { background-color: var(--dialog-blue); color: white; cursor: pointer; }
+.menu-item::first-letter { text-decoration: underline; }
+
+.win95-workspace {
+    display: flex;
+    max-height: 85vh; /* Ограничиваем высоту, чтобы скроллился контент, а не весь экран */
+    margin-top: 2px;
+}
+
+#win95-sidebar {
+    width: 160px;
+    background-color: var(--surface);
+    border-right: 2px solid;
+    border-color: var(--button-highlight) var(--button-shadow) var(--button-shadow) var(--button-highlight);
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.win95-nav-btn {
+    background-color: var(--surface);
+    border: 2px solid;
+    border-color: var(--button-highlight) var(--button-active-shadow) var(--button-active-shadow) var(--button-highlight);
+    padding: 6px 8px;
+    text-align: left;
+    font-weight: bold;
+    cursor: pointer;
+    outline: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.win95-nav-btn.active-nav {
+    border-color: var(--button-active-shadow) var(--button-highlight) var(--button-highlight) var(--button-active-shadow);
+    background-color: #d4d4d4; 
+    padding: 7px 7px 5px 9px;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2rVrf2QAAwMEMEKYIEAIEGAAAwMBhI1T/Z8AAAAASUVORK5CYII=');
+}
+
+.win95-main-content {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background-color: var(--surface); /* Убрали белую подложку */
+}
+
+.win95-fieldset {
+    border: 2px solid;
+    border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
+    padding: 12px;
+    margin-bottom: 16px;
+}
+.win95-fieldset legend { color: black; padding: 0 4px; font-weight: bold; }
+
+.win95-btn {
+    background-color: var(--surface);
+    color: black;
+    border: 2px solid;
+    border-color: var(--button-highlight) var(--button-active-shadow) var(--button-active-shadow) var(--button-highlight);
+    padding: 4px 14px;
+    cursor: pointer;
+    font-weight: bold;
+    outline: none;
+}
+.win95-btn:active {
+    border-color: var(--button-active-shadow) var(--button-highlight) var(--button-highlight) var(--button-active-shadow);
+    padding: 5px 13px 3px 15px;
+}
+.win95-btn-action { border-width: 3px; }
+
+.win95-input, .win95-select {
+    border: 2px solid;
+    border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
+    background: #ffffff;
+    padding: 3px 4px;
+    outline: none;
+}
+.win95-file-input {
+    border: 2px solid;
+    border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
+    background: var(--surface);
+    padding: 2px;
+    width: 100%;
+}
+.win95-file-input::-webkit-file-upload-button {
+    background-color: var(--surface);
+    border: 2px solid;
+    border-color: var(--button-highlight) var(--button-active-shadow) var(--button-active-shadow) var(--button-highlight);
+    padding: 2px 10px;
+    margin-right: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.win95-file-input::-webkit-file-upload-button:active {
+    border-color: var(--button-active-shadow) var(--button-highlight) var(--button-highlight) var(--button-active-shadow);
+}
+
+.win95-inset-pane {
+    background-color: #ffffff;
+    border: 2px solid;
+    border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow);
+    padding: 6px;
+}
+
+.win95-overlay-bg {
+    position: fixed; inset: 0;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABZJREFUeNpi2rVrf2QAAwMEMEKYIEAIEGAAAwMBhI1T/Z8AAAAASUVORK5CYII=') repeat;
+    z-index: 100;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+.win95-overlay-bg.flex { display: flex; }
+
+.win95-modal-window {
+    background-color: var(--surface);
+    border: 2px solid;
+    border-color: var(--button-highlight) var(--button-active-shadow) var(--button-active-shadow) var(--button-highlight);
+    box-shadow: 2px 2px 0 var(--button-active-shadow);
+}
+
+.win95-progress-chunk {
+    background-color: var(--dialog-blue);
+    width: 8%; height: 100%; margin-right: 2px;
+    display: inline-block;
+    animation: loadProgress 1.5s infinite linear;
+}
+@keyframes loadProgress { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+
+.hidden { display: none !important; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* --- ПАТЧ: Форсируем черный цвет для всех генерируемых списков и чекбоксов --- */
+.win95-inset-pane label, 
+[id$="-checkboxes"] label, 
+.win95-list-item {
+    color: black !important;
+}
+
+/* --- ПАТЧ: Адаптивный прогресс-бар на всю ширину --- */
+.win95-progress-chunk {
+    background-color: var(--dialog-blue);
+    flex: 1; /* Растягивает блоки на 100% ширины контейнера */
+    height: 100%;
+    margin-right: 2px;
+    opacity: 0;
+    animation: loadProgress 1.5s infinite linear;
+}
+.win95-progress-chunk:last-child {
+    margin-right: 0;
+}
+@keyframes loadProgress {
+    0% { opacity: 0; }
+    10% { opacity: 1; }
+    80% { opacity: 1; }
+    100% { opacity: 0; }
+}
