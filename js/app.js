@@ -3,11 +3,21 @@ const App = {
         if(message) document.getElementById("loading-text").innerText = message;
         document.getElementById("loading-overlay").classList.remove("hidden");
         document.getElementById("loading-overlay").classList.add("flex");
+
+        // РО ВЕР ВКЛЮЧАЕТ РЕЖИМ ЧТЕНИЯ КНИГИ
+        if (typeof ModeRover !== 'undefined') {
+            ModeRover.setWorkingState(true);
+        }
     },
 
     hideLoader() {
         document.getElementById("loading-overlay").classList.remove("flex");
         document.getElementById("loading-overlay").classList.add("hidden");
+
+        // РОВЕР ВОЗВРАЩАЕТСЯ В ОЖИДАНИЕ
+        if (typeof ModeRover !== 'undefined') {
+            ModeRover.setWorkingState(false);
+        }
     },
 
     toggleCheckboxes(containerId, state) {

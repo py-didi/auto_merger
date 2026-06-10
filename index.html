@@ -61,7 +61,31 @@
                 </button>
                 
                 <div style="height: 1px; background: #808080; border-bottom: 1px solid white; margin: 10px 0;"></div>
-                
+                <div style="margin-top: 15px;">
+    <fieldset class="win95-fieldset" style="padding: 6px;">
+        <legend>Ассистент Rover</legend>
+        <div style="display: flex; flex-direction: column; gap: 6px; background: #ffffff; border: 2px solid; border-color: var(--button-shadow) var(--button-highlight) var(--button-highlight) var(--button-shadow); padding: 6px;">
+            
+            <div id="rover-gif-container" style="width: 80px; height: 80px; margin: 0 auto; overflow: hidden; flex-shrink: 0; display: flex; align-items: center; justify-content: center;">
+                <div id="rover-gif-idle" class="w-full h-full">
+                    <div class="tenor-gif-embed" data-postid="3072941770086674742" data-share-method="host" data-aspect-ratio="1" data-width="100%"><a href="https://tenor.com/view/windows-xp-dog-windows-xp-windows-windows-meme-rover-gif-3072941770086674742">Windows Xp Dog Windows Meme GIF</a></div>
+                </div>
+                <div id="rover-gif-working" class="w-full h-full hidden">
+                    <div class="tenor-gif-embed" data-postid="11209458" data-share-method="host" data-aspect-ratio="1" data-width="100%"><a href="https://tenor.com/view/dog-reading-good-boy-windows-microsoft-gif-11209458">Dog Reading GIF</a></div>
+                </div>
+            </div>
+
+            <div class="win95-inset-pane" style="background: #ffffcc; border: 1px solid #000; padding: 6px; font-size: 11px; line-height: 1.3; min-height: 50px; color: black !important;">
+                <span id="rover-text-cloud">🐶 Загружаюсь, гав...</span>
+            </div>
+            
+            <button onclick="ModeRover.sayRandom()" class="win95-btn text-[10px]" style="padding: 1px 4px; width: 100%;">🐾 Спросить совет</button>
+        </div>
+    </fieldset>
+</div>
+
+<script type="text/javascript" async src="https://tenor.com/embed.js"></script>
+<script src="js/mode-rover.js"></script>
                 <a href="https://t.me/D2bd2" target="_blank" style="color: blue; text-align: center; text-decoration: underline; font-size: 11px; margin-top: auto; padding-bottom: 4px;">
                     Поблагодарить автора
                 </a>
@@ -221,5 +245,6 @@
     <script src="js/app.js"></script>
     <script src="js/mode-vlookup.js"></script>
     <script src="js/mode-stacker.js"></script>
+    <script src="js/mode-rover.js"></script>
 </body>
 </html>
